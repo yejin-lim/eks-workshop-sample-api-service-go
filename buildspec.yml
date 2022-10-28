@@ -11,7 +11,6 @@ phases:
       - sudo yum -y install unzip
       - sudo yum install -y httpd
       - sudo yum -y install epel-release
-      - sudo yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
       - sudo yum install yum-utils
       - sudo yum-config-manager --enable remi-php72
       - sudo yum install php
