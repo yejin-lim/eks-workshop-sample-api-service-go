@@ -9,7 +9,9 @@ phases:
       - export PATH=$PWD/:$PATH
       - sudo yum update -y
       - sudo yum -y install unzip
-      - sudo yum install -y apache2
+      - sudo yum install -y httpd
+      - sudo systemctl enable httpd.service 
+      - sudo systemctl start httpd
       - sudo yum install libapache2-mpm-itk -y
       - sudo yum install -y php7.2
       - sudo yum install -y php-mbstring php-gd php-curl php-xml php-mysql
