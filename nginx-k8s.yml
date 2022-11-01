@@ -15,19 +15,23 @@ kind: Deployment
 metadata:
   name: nginx-k8s
   labels:
-    app: nginx
+    app: eks
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
-      app: nginx
+      app: eks
   template:
     metadata:
       labels:
-        app: nginx
+        app: eks
     spec:
       containers:
-      - name: nginx
-        image: nginx:1.20.1
+      - name: eks
+        image: REPOSITORY_URI
         ports:
         - containerPort: 80
+        imagePullPolicy: Always
+          env:
+            - name: DATE
+              value: 'DATE_STRING'
