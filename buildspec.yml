@@ -17,11 +17,11 @@ phases:
 
   build:
     commands:
+      - echo Build started on `date`
       - echo Building the Docker image
       - docker build -t $REPOSITORY_NAME:$IMAGE_TAG .
       - docker tag $REPOSITORY_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_URI:$IMAGE_TAG
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME:$IMAGE_TAG
-
+  
   post_build:
     commands:
       - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME:$IMAGE_TAG
@@ -33,6 +33,8 @@ phases:
       - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
       - DATE='date'
       - echo Build completed on $DATE
+      - echo Pushing the Docker image...
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME:$IMAGE_TAG
       - sed -i.bak 's#REPOSITORY_URI#'"$REPOSITORY_URI"'#' nginx-k8s.yml
       - sed -i.bak 's#DATE_STRING#'"$DATE"'#' nginx-k8s.yml
       - kubectl apply -f nginx-k8s.yml
