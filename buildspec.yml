@@ -24,6 +24,7 @@ phases:
   
   post_build:
     commands:
+      - dgoss run $REPOSITORY_NAME:$IMAGE_TAG
       - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME:$IMAGE_TAG
       #- aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
       - DATE='date'
