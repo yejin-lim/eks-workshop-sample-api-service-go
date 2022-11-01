@@ -28,8 +28,6 @@ phases:
       - export AWS_EXPIRATION=$(echo ${CREDENTIALS} | jq -r '.Credentials.Expiration')
       - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
       - kubectl apply -f nginx-k8s.yml
-      - docker run -it -d -p 8000:80 --name=webserver1 nginx:1.20.1
-      - docker cp index.html webserver1:/go/src/github.com/eks-workshop-sample-api-service-go/index.html
 
       - printf '[{"name":"nginx-k8s","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
 artifacts:
