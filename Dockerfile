@@ -4,7 +4,7 @@ RUN mkdir -p /go/src/github.com/eks-workshop-sample-api-service-go
 
 
 COPY . /usr/share/nginx/html
-COPY --from=builder /go/src/github.com/eks-workshop-sample-api-service-go/index.html /nginx
+COPY /go/src/github.com/eks-workshop-sample-api-service-go/index.html /nginx
 
 EXPOSE 80
 EXPOSE 8080
