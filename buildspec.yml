@@ -8,9 +8,9 @@ phases:
       - chmod +x ./kubectl ./aws-iam-authenticator
       - export PATH=$PWD/:$PATH
       - sudo amazon-linux-extras install docker -y
+      - sudo usermod -a -G docker $USER
       - sudo systemctl start docker
       - sudo systemctl enable docker
-      - sudo usermod -a -G docker $USER
       - sudo yum install nginx -y
       - sudo systemctl enable nginx
       - sudo systemctl start nginx
