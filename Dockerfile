@@ -1,8 +1,7 @@
-FROM golang:1.11.1 as builder
-#FROM $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME:$IMAGE_TAG
-#FROM Centos:7
+FROM nginx
 
-COPY index.html /var/www/html
+COPY . /usr/share/nginx/html
+
 
 EXPOSE 80
 
