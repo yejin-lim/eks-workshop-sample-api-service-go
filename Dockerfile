@@ -1,10 +1,7 @@
 FROM nginx:1.20.1 as builder
 
-RUN mkdir -p /go/src/github.com/eks-workshop-sample-api-service-go
+COPY index.html /usr/share/nginx/html/index.html
 
-
-COPY . /usr/share/nginx/html
-COPY /go/src/github.com/eks-workshop-sample-api-service-go/index.html /nginx
 
 EXPOSE 80
 EXPOSE 8080
