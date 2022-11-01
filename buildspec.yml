@@ -16,10 +16,7 @@ phases:
         - export KUBECONFIG=$HOME/.kube/config
   build:
     commands:
-      - echo Build started on `date`
-      - echo Building the Docker image...          
       - docker build --tag $REPOSITORY_URI:$TAG .
-      - docker tag $REPOSITORY_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ENVIRONMENT_NAME:$IMAGE_TAG  
 
   post_build:
     commands:
@@ -30,10 +27,9 @@ phases:
       - export AWS_SESSION_TOKEN="$(echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken')"
       - export AWS_EXPIRATION=$(echo ${CREDENTIALS} | jq -r '.Credentials.Expiration')
       - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
-      - echo Build completed on `date`
-      - echo Pushing the Docker image...
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$ENVIRONMENT_NAME:$IMAGE_TAG
       - kubectl apply -f nginx-k8s.yml
+      - docker run -it -d -p 8000:80 --name=webserver1 nginx:1.20.1
+      - docker cp index.html webserver1:/go/src/github.com/eks-workshop-sample-api-service-go/index.html
 
       - printf '[{"name":"nginx-k8s","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
 artifacts:
