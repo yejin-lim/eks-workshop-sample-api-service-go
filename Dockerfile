@@ -1,4 +1,4 @@
-FROM golang:1.11.1 as builder
+FROM centos:7 
 
 RUN yum update
 RUN yum install -y nginx
