@@ -29,7 +29,7 @@ phases:
       - DATE='date'
       - echo Build completed on $DATE
       - echo Pushing the Docker image...
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME:$IMAGE_TAG
+      - docker push $REPOSITORY_NAME:$IMAGE_TAG
       - sed -i.bak 's#REPOSITORY_URI#'"$REPOSITORY_URI"'#' nginx-k8s.yml
       - sed -i.bak 's#DATE_STRING#'"$DATE"'#' nginx-k8s.yml
       - kubectl apply -f nginx-k8s.yml
