@@ -2,40 +2,32 @@
 version: 0.2
 phases:
   install:
-    runtime-versions:
-      docker: 18
     commands:
       - curl -sS -o aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator
       - curl -sS -o kubectl https://amazon-eks.s3-us-west-2.amazonaws.com/1.14.6/2019-08-22/bin/linux/amd64/kubectl
       - chmod +x ./kubectl ./aws-iam-authenticator
       - export PATH=$PWD/:$PATH
-
   pre_build:
       commands:
-        - echo Logging in to Amazon ECR...
-        - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/
-
+        - TAG="$REPOSITORY_NAME.$REPOSITORY_BRANCH.$ENVIRONMENT_NAME.$(date +%Y-%m-%d.%H.%M.%S).$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
+        - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:$TAG"'@' hello-k8s.yml
+        - $(aws ecr get-login --no-include-email)
+        - export KUBECONFIG=$HOME/.kube/config
   build:
     commands:
-      - echo Build started on `date`
-      - echo Building the Docker image
-      - docker build -t $REPOSITORY_NAME:$IMAGE_TAG .
-      - docker tag $REPOSITORY_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_URI:$IMAGE_TAG
-  
+      - docker build --tag $REPOSITORY_URI:$TAG .
+
   post_build:
     commands:
-      - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME:$IMAGE_TAG
-      #- aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
-      - DATE='date'
-      - echo Build completed on $DATE
-      - echo Pushing the Docker image...
-      - docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME:$IMAGE_TAG
-      - docker run -d -p 8080:80 $REPOSITORY_NAME:$IMAGE_TAG
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME:$IMAGE_TAG
-      - sed -i.bak 's#REPOSITORY_URI#'"$REPOSITORY_URI"'#' nginx-k8s.yml
-      - sed -i.bak 's#DATE_STRING#'"$DATE"'#' nginx-k8s.yml
-      - kubectl apply -f nginx-k8s.yml
+      - docker push $REPOSITORY_URI:$TAG
+      - CREDENTIALS=$(aws sts assume-role --role-arn $EKS_KUBECTL_ROLE_ARN --role-session-name codebuild-kubectl --duration-seconds 900)
+      - export AWS_ACCESS_KEY_ID="$(echo ${CREDENTIALS} | jq -r '.Credentials.AccessKeyId')"
+      - export AWS_SECRET_ACCESS_KEY="$(echo ${CREDENTIALS} | jq -r '.Credentials.SecretAccessKey')"
+      - export AWS_SESSION_TOKEN="$(echo ${CREDENTIALS} | jq -r '.Credentials.SessionToken')"
+      - export AWS_EXPIRATION=$(echo ${CREDENTIALS} | jq -r '.Credentials.Expiration')
+      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
+      - kubectl apply -f hello-k8s.yml
 
-      - printf '[{"name":"nginx-k8s","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > build.json
+      - printf '[{"name":"hello-k8s","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
 artifacts:
   files: build.json
