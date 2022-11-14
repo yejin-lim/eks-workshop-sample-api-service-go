@@ -18,6 +18,5 @@ EXPOSE 8080
 CMD ["/main"]
 
 
-FROM nginx
-
-COPY . /usr/share/nginx/html
+#FROM nginx
+#COPY . /usr/share/nginx/html
