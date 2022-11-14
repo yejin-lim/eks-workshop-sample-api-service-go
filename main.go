@@ -7,11 +7,8 @@ import (
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		tmpl, err := template.New("index").Parse("<h1>Hello, Go!<h1>")
+		tmpl, err := template.New("index")
 	})
 	http.ListenAndServe(":8080", nil)
 }
 
-type response struct {
-	Message string   `json:"message"`
-}
