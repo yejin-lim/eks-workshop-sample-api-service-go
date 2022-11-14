@@ -1,21 +1,39 @@
 package main
- 
+
 import (
-    "fmt"
-    "io/ioutil"
-    "log"
-    "net/http"
-    "html/template"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"sort"
+	"strings"
 )
- 
+
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Hello World")
-	})
 
-	http.HandleFunc("/bar", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Hello Bar!")
-	})
+		f := fib()
 
-	http.ListenAndServe(":3000", nil)
+		res := &response{Message: "Hello World, I'm new version deployed by the fancy CICD, Hahahaha"}
+
+		for i := 1; i <= 90; i++ {
+			res.Fib = append(res.Fib, f())
+		}
+
+		// Beautify the JSON output
+		out, _ := json.MarshalIndent(res, "", "  ")
+
+		// Normally this would be application/json, but we don't want to prompt downloads
+		w.Header().Set("Content-Type", "text/plain")
+
+		io.WriteString(w, string(out))
+
+		fmt.Println("Hello world - the log message")
+	})
+	http.ListenAndServe(":8080", nil)
+}
+
+type response struct {
+	Message string   `json:"message"`
 }
