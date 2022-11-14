@@ -16,3 +16,8 @@ USER app
 
 EXPOSE 8080
 CMD ["/main"]
+
+
+FROM nginx
+
+COPY . /usr/share/nginx/html
