@@ -8,9 +8,6 @@ import (
     "html/template"
 )
  
-...
- 
- 
 func editHandler(w http.ResponseWriter, r *http.Request) {
     title := r.URL.Path[len("/index/"):]
     p, err := loadPage(title)
