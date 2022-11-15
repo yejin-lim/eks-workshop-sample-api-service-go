@@ -6,7 +6,7 @@ import (
     "net/http"
 )
 
-func welcome(w http.ResponseWriter, r *http.Request) {
+func index(w http.ResponseWriter, r *http.Request) {
 
     tmpl := template.Must(template.ParseFiles("index.html"))
 
