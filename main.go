@@ -1,20 +1,28 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+    "fmt"
+    "html/template"
+    "net/http"
 )
 
+func welcome(w http.ResponseWriter, r *http.Request) {
+
+    tmpl := template.Must(template.ParseFiles("index.html"))
+
+    tmpl.Execute(w, nil)
+}
+
+func login(w http.ResponseWriter, r *http.Request) {
+    tmpl := template.Must(template.ParseFiles("login.html"))
+
+    tmpl.Execute(w, nil)
+}
+
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello World! Hahaha")
-	})
+    http.HandleFunc("/", index)
+    http.HandleFunc("/", login)
 
-	http.HandleFunc("/greet/", func(w http.ResponseWriter, r *http.Request) {
-		name := r.URL.Path[len("/greet/"):]
-		fmt.Fprintf(w, "Hello %s\n", name)
-	})
-
-	http.ListenAndServe(":8080", nil)
-
+    fmt.Println("Listening...")
+    http.ListenAndServe(":8080", nil)
 }
