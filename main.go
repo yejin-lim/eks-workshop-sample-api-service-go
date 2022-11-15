@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-    log.Fatal(http.ListenAndServe(":8080", http.FileServer(http.Dir("./web/templates"))))
+     http.Handle("/web/templates/", http.StripPrefix("/web/templates/", http.FileServer(http.Dir("./public"))))
 }
