@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"path"
 
-	"github.com/yejin-lim/eks-workshop-sample-api-service-go"
+	"github.com/gin-gonic/gin"
 )
 
 var (
