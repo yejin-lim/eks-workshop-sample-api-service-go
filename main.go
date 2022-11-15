@@ -1,23 +1,25 @@
 package main
 
 import (
-	"net/http"
-	"github.com/yejin-lim/eks-workshop-sample-api-service-go"
+  "net/http"
+  "html/template"
+  "github.com/yejin-lim/eks-workshop-sample-api-service-go"
+  "fmt"
 )
 
 func main() {
-	r := gin.Default()
+  r := mux.NewRouter()
+  tmpl := template.Must(template.ParseFiles("index.html"))
 
-	r.LoadHTMLGlob("template/*")
-
-	r.GET("/", func(c *gin.Context) {		
-        // OK 이면 index.html파일에 JSON데이터를 넘겨서 보여줌 
-		c.HTML(http.StatusOK, "index.html", gin.H{
-				"title": "Home Page",
-			},
-		)
-	})
-
-	r.Run()
-
+  r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+    tmpl.Execute(w, nil)
+  }).Methods("GET")
+  
+  r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+    var details ContactDetails
+    json.NewDecoder(r.Body).Decode(&details) // read body, then decode
+    json.NewEncoder(w).Encode(details) // encode, then send to user
+  }).Methods("POST")
+  
+  http.ListenAndServe(":8080", r)
 }
