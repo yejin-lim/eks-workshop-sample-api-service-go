@@ -10,21 +10,21 @@ import (
 )
 
 var (
-	//go:embed web/template/*.html
-	templateFS embed.FS
+	//go:embed web/templates/*.html
+	templatesFS embed.FS
 
 	//go:embed web
-	//staticFS embed.FS
+	staticFS embed.FS
 )
 
 func main() {
 	r := gin.Default()
 
-	LoadHTMLFromEmbedFS(r, templateFS, "template/*")
+	LoadHTMLFromEmbedFS(r, templatesFS, "web/templates/*")
 
 	r.GET("/", index)
-	r.GET("template/*filepath", func(c *gin.Context) {
-		c.FileFromFS(path.Join("/", c.Request.URL.Path), http.FS(templateFS))
+	r.GET("/static/*filepath", func(c *gin.Context) {
+		c.FileFromFS(path.Join("/web/", c.Request.URL.Path), http.FS(staticFS))
 	})
 	r.Run()
 }
