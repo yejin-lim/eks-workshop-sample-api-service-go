@@ -1,20 +1,22 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello World")
+	r := gin.Default()
+
+	r.LoadHTMLGlob("web/templates/*")
+
+	r.GET("/", func(c *gin.Context) {		
+        // OK 이면 index.html파일에 JSON데이터를 넘겨서 보여줌 
+		c.HTML(http.StatusOK, "index.html", gin.H{
+				"title": "Home Page",
+			},
+		)
 	})
 
-	http.HandleFunc("/greet/", func(w http.ResponseWriter, r *http.Request) {
-		name := r.URL.Path[len("/greet/"):]
-		fmt.Fprintf(w, "Hello %s\n", name)
-	})
-
-	http.ListenAndServe(":8080", nil)
+	r.Run()
 
 }
