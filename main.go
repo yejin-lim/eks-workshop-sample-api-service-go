@@ -1,13 +1,20 @@
 package main
- 
+
 import (
-    "net/http"
+	"fmt"
+	"net/http"
 )
- 
+
 func main() {
-    http.HandleFunc("/hello", func(w http.ResponseWriter, req *http.Request) {
-        w.Write([]byte("Hello World"))
-    })
- 
-    http.ListenAndServe(":8080", nil)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello World")
+	})
+
+	http.HandleFunc("/greet/", func(w http.ResponseWriter, r *http.Request) {
+		name := r.URL.Path[len("/greet/"):]
+		fmt.Fprintf(w, "Hello %s\n", name)
+	})
+
+	http.ListenAndServe(":8080", nil)
+
 }
