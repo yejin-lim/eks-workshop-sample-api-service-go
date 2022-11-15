@@ -1,7 +1,6 @@
 package main
 
 import (
-	"html/template"
 	"net/http"
 	"github.com/yejin-lim/eks-workshop-sample-api-service-go"
 )
