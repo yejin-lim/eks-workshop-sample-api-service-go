@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"github.com/yejin-lim/eks-workshop-sample-api-service-go"
 )
 
 func main() {
