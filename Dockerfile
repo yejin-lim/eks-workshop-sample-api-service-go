@@ -4,6 +4,8 @@ RUN apt-get update
 RUN apt-get install -y nginx
 RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
 RUN chown -R www-data:www-data /var/lib/nginx
+COPY index.html /var/www/html
+COPY login.html /var/www/html
 VOLUME ["/data", "/etc/nginx/site-enabled", "/var/log/nginx"]
 
 WORKDIR /etc/nginx
