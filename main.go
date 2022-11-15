@@ -5,10 +5,19 @@ import (
 	"github.com/yejin-lim/eks-workshop-sample-api-service-go"
 )
 
-func process(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParaseFiles("index.html")
-	t.ExecuteTemplate(w, "index.html")
 func main() {
-	http.HandleFunc("/process", process)
-	http.ListenAndServe(":8080", nil)
+	r := gin.Default()
+
+	r.LoadHTMLGlob("template/*")
+
+	r.GET("/", func(c *gin.Context) {		
+        // OK 이면 index.html파일에 JSON데이터를 넘겨서 보여줌 
+		c.HTML(http.StatusOK, "index.html", gin.H{
+				"title": "Home Page",
+			},
+		)
+	})
+
+	r.Run()
+
 }
