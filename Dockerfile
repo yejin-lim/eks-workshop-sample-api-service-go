@@ -1,3 +1,6 @@
+FROM nginx
+COPY . /usr/share/nginx/html
+
 # This is a multi-stage build. First we are going to compile and then
 # create a small image for runtime.
 
@@ -17,7 +20,3 @@ USER app
 
 EXPOSE 8080
 CMD ["/main"]
-
-
-FROM nginx
-COPY . /usr/share/nginx/html
