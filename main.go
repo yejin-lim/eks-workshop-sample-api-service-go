@@ -1,36 +1,20 @@
 package main
 
 import (
-  "net/http"
-
-  "github.com/gin-gonic/gin"
+	"fmt"
+	"net/http"
 )
 
-var router *gin.Engine
-
 func main() {
-	
-    // ----- Gin에서 기본 라우터 생성 ----- //
-    router = gin.Default()
-    
-    // ------ 모든 템플릿 파일 로드 ------- //
-    router.LoadHTMLGlob("web/templates/*")
-    
-	router.GET("/", func(c *gin.Context) {
-    // ------ Context의 HTML 메소드를 호출하여 템플릿을 렌더링합니다. ----- //
-		c.HTML(
-			// ----- HTTP 상태를 200(OK)에 세팅합니다 ------ //
-			http.StatusOK,
-			// ------ index.html 템플릿을 사용합니다 ------- //
-			"index.html",
-			// ----- 페이지에서 사용하는 데이터 전달 ------- //
-			gin.H{
-				"title": "Home Page",
-			},
-		)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello World")
 	})
 
-  // ------ 어플리케이션 서버 구동 ------//
-  router.Run()
+	http.HandleFunc("/greet/", func(w http.ResponseWriter, r *http.Request) {
+		name := r.URL.Path[len("/greet/"):]
+		fmt.Fprintf(w, "Hello %s\n", name)
+	})
+
+	http.ListenAndServe(":8080", nil)
 
 }
