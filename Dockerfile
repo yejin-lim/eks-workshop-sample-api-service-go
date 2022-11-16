@@ -25,6 +25,7 @@ RUN useradd -u 10001 app
 
 ENV GIN_MODE=release
 WORKDIR /go/src/crawler-docker
+COPY main.go .
 RUN apk update && apk add --no-cache git
 RUN go get github.com/ryulitaro/crawler
 RUN go get github.com/gin-gonic/gin
