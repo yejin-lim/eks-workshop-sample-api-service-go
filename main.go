@@ -1,50 +1,36 @@
 package main
 
 import (
-  "log"
   "net/http"
-  "net/http/cgi"
+
+  "github.com/gin-gonic/gin"
 )
 
+var router *gin.Engine
+
 func main() {
-  http.Handle("/", &cgi.Handler{
-    Path: "/usr/bin/php-cgi",
-    Dir:  "./",
-    Env: []string{
-      "SCRIPT_FILENAME=F2_TBDEV3054.php5",
-      "REDIRECT_STATUS=trash",
-    },
-  })
+	
+    // ----- Gin에서 기본 라우터 생성 ----- //
+    router = gin.Default()
+    
+    // ------ 모든 템플릿 파일 로드 ------- //
+    router.LoadHTMLGlob("web/templates/*")
+    
+	router.GET("/", func(c *gin.Context) {
+    // ------ Context의 HTML 메소드를 호출하여 템플릿을 렌더링합니다. ----- //
+		c.HTML(
+			// ----- HTTP 상태를 200(OK)에 세팅합니다 ------ //
+			http.StatusOK,
+			// ------ index.html 템플릿을 사용합니다 ------- //
+			"index.html",
+			// ----- 페이지에서 사용하는 데이터 전달 ------- //
+			gin.H{
+				"title": "Home Page",
+			},
+		)
+	})
 
-  // Assumes ../app/app is running in ../app directory
-  //http.Handle("/go-fcgi", &fcgi.Handler{
-  //  Dialer: &fcgi.NetDialer{
-  //    Network: "unix",
-  //    Address: "../app.socket",
-  //  },
-  //})
-  //http.Handle("/go-cgi", &cgi.Handler{
-  //  Path: "../app/app",
-  //  Dir:  "../app/",
-  //  Args: []string{"cgi"},
-  //})
-  //
-  //// Assumes ../app/index.py is running in ../app directory
-  //http.Handle("/py-fcgi", &fcgi.Handler{
-  //  Dialer: &fcgi.NetDialer{
-  //    Network: "unix",
-  //    Address: "../app-py.socket",
-  //  },
-  //})
-  //http.Handle("/py-cgi", &cgi.Handler{
-  //  Path: "../app/index.py",
-  //  Dir:  "../app/",
-  //  Args: []string{"cgi"},
-  //})
+  // ------ 어플리케이션 서버 구동 ------//
+  router.Run()
 
-  log.Println("port:8080")
-  err := http.ListenAndServe(":8080", nil)
-  if err != nil {
-    log.Fatal(err.Error())
-  }
 }
