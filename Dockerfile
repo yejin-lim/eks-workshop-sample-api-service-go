@@ -23,12 +23,12 @@ RUN mkdir -p /go/src/github.com/eks-workshop-sample-api-service-go
 WORKDIR /go/src/github.com/eks-workshop-sample-api-service-go
 RUN useradd -u 10001 app
 
-ENV GIN_MODE=release
-WORKDIR /go/src/crawler-docker
-COPY main.go .
-RUN apk update && apk add --no-cache git
-RUN go get github.com/ryulitaro/crawler
-RUN go get github.com/gin-gonic/gin
+#ENV GIN_MODE=release
+#WORKDIR /go/src/crawler-docker
+#COPY main.go .
+#RUN apk update && apk add --no-cache git
+#RUN go get github.com/ryulitaro/crawler
+#RUN go get github.com/gin-gonic/gin
 
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
