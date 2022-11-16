@@ -1,10 +1,24 @@
 package main
 
 import (
-    "log"
-    "net/http"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-     log.Fatal(http.ListenAndServe(":8080", http.FileServer(http.Dir("/usr/share/nginx/"))))
+	r := gin.Default()
+
+	r.LoadHTMLGlob("web/templates/*")
+
+	r.GET("/", func(c *gin.Context) {		
+        // OK 이면 index.html파일에 JSON데이터를 넘겨서 보여줌 
+		c.HTML(http.StatusOK, "index.html", gin.H{
+				"title": "Home Page",
+			},
+		)
+	})
+
+	r.Run()
+
 }
