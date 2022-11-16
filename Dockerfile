@@ -17,16 +17,16 @@ EXPOSE 13000
 # This is a multi-stage build. First we are going to compile and then
 # create a small image for runtime.
 
-FROM golang:1.13.1 as builder
+FROM golang:1.13 as builder
 
 RUN mkdir -p /go/src/github.com/eks-workshop-sample-api-service-go
 WORKDIR /go/src/github.com/eks-workshop-sample-api-service-go
 RUN useradd -u 10001 app
 
-#ENV GIN_MODE=release
+ENV GIN_MODE=release
 #WORKDIR /go/src/crawler-docker
 #COPY main.go .
-#RUN apk update && apk add --no-cache git
+RUN apk update && apk add --no-cache git
 #RUN go get github.com/ryulitaro/crawler
 RUN go get github.com/gin-gonic/gin
 
